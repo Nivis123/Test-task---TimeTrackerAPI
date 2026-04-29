@@ -1,0 +1,160 @@
+{
+  "info": {
+    "name": "Task Time Tracker API",
+    "description": "Postman collection for testing the Task time tracker REST API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    console.log('Token saved: ' + jsonData.token);",
+                  "} else {",
+                  "    console.log('Login failed. Check credentials.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"admin\",\"password\":\"admin\"}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "host": ["http://localhost:8080"],
+              "path": ["api","auth","login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Create Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('taskId', jsonData.id);",
+                  "    console.log('Task ID saved: ' + jsonData.id);",
+                  "} else {",
+                  "    console.log('Create Task failed.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{"key":"token","value":"{{token}}","type":"string"}] },
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Implement feature X\",\"description\":\"Develop the new feature\"}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/tasks",
+              "host": ["http://localhost:8080"],
+              "path": ["api","tasks"]
+            }
+          }
+        },
+        {
+          "name": "Get Task",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{"key":"token","value":"{{token}}","type":"string"}] },
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/{{taskId}}",
+              "host": ["http://localhost:8080"],
+              "path": ["api","tasks","{{taskId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Task Status",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{"key":"token","value":"{{token}}","type":"string"}] },
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\":\"IN_PROGRESS\"}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/{{taskId}}/status",
+              "host": ["http://localhost:8080"],
+              "path": ["api","tasks","{{taskId}}","status"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Time Records",
+      "item": [
+        {
+          "name": "Create Time Record",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{"key":"token","value":"{{token}}","type":"string"}] },
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"employeeId\":100,\"startTime\":\"2024-06-01T09:00:00\",\"endTime\":\"2024-06-01T12:00:00\",\"descriptionWork\":\"Coding\"}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/{{taskId}}/timerecords",
+              "host": ["http://localhost:8080"],
+              "path": ["api","tasks","{{taskId}}","timerecords"]
+            }
+          }
+        },
+        {
+          "name": "Get Time Records by period",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{"key":"token","value":"{{token}}","type":"string"}] },
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/timerecords?employeeId=100&startDate=2024-06-01&endDate=2024-06-30",
+              "host": ["http://localhost:8080"],
+              "path": ["api","timerecords"],
+              "query": [
+                {"key":"employeeId","value":"100"},
+                {"key":"startDate","value":"2024-06-01"},
+                {"key":"endDate","value":"2024-06-30"}
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "token", "value": "" },
+    { "key": "taskId", "value": "" }
+  ]
+}

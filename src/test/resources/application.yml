@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: test
+    password: test
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+server:
+  port: 8081
+mybatis:
+  mapper-locations: classpath:*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+jwt:
+  secret: c2VjdXJlLXNlY3JldC1rZXktZm9yLWp3dC10YXNrLXRpbWUtdHJhY2tlci1hcGk=
+  expiration-ms: 86400000
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
