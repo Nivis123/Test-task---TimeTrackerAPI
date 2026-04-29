@@ -1,8 +1,6 @@
 package ru.prod.tracker.controller;
 
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +22,6 @@ public class AuthController {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
-    Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     public AuthController(UserMapper userMapper, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
         this.userMapper = userMapper;
@@ -35,9 +32,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest request) {
         Optional<User> userOpt = userMapper.findByUsername(request.getUsername());
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-        }
 
         if (userOpt.isEmpty() || !passwordEncoder.matches(request.getPassword(), userOpt.get().getPassword())) {
             return ResponseEntity.status(401).build();
